@@ -59,6 +59,7 @@
   // Retrieve these from the URL
   if (!isset($_GET['keyword'])) {
     // TODO: Define behavior if a keyword has not been specified.
+    $keyword = '';
   }
   else {
     $keyword = $_GET['keyword'];
@@ -66,6 +67,7 @@
 
   if (!isset($_GET['cat'])) {
     // TODO: Define behavior if a category has not been specified.
+    $category = '';
   }
   else {
     $category = $_GET['cat'];
@@ -73,6 +75,7 @@
   
   if (!isset($_GET['order_by'])) {
     // TODO: Define behavior if an order_by value has not been specified.
+    $ordering = 'pricelow';
   }
   else {
     $ordering = $_GET['order_by'];
@@ -88,6 +91,7 @@
   /* TODO: Use above values to construct a query. Use this query to 
      retrieve data from the database. (If there is no form data entered,
      decide on appropriate default value/default query to make. */
+     
   
   /* For the purposes of pagination, it would also be helpful to know the
      total number of results that satisfy the above query */
