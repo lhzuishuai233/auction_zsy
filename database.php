@@ -81,7 +81,6 @@ if (mysqli_query($connection, $sql)) {
 $sql = "
 CREATE TABLE IF NOT EXISTS Users (
     UserId INT AUTO_INCREMENT PRIMARY KEY,
-    UserName VARCHAR(255) NOT NULL UNIQUE,
     Email VARCHAR(255) NOT NULL UNIQUE,
     Password VARCHAR(255) NOT NULL,
     Role ENUM('Buyer', 'Seller') NOT NULL
