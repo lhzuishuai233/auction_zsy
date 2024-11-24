@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS Users (
     UserId INT AUTO_INCREMENT PRIMARY KEY,
     Email VARCHAR(255) NOT NULL UNIQUE,
     Password VARCHAR(255) NOT NULL,
-    Role ENUM('Buyer', 'Seller') NOT NULL
+    Role ENUM('buyer', 'seller') NOT NULL
 ) AUTO_INCREMENT=20240001";
 if (mysqli_query($connection, $sql)) {
     echo "Table 'users' created successfully.<br>";
