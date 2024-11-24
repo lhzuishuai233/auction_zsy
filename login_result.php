@@ -7,17 +7,18 @@
 
 session_start();
 
+// 连接数据库，需被修改
 $servername = "localhost";
-$username = "COMP0178"; // 替换为您的数据库用户名
-$password = "DatabaseCW"; // 替换为您的数据库密码
+$username = "COMP0178";
+$password = "DatabaseCW"; 
 $dbname = "AuctionSystem";
 
 $connection = mysqli_connect($servername, $username, $password, $dbname);
 
-// 检查连接是否成功
 if (!$connection) {
     die("Error connecting to database: " . mysqli_connect_error());
 }
+
 
 // 检查是否通过 POST 提交
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
