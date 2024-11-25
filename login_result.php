@@ -46,6 +46,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $_SESSION['logged_in'] = true;
             $_SESSION['username'] = $user['Email']; // 这里可以存储其他字段作为用户名
             $_SESSION['account_type'] = $user['Role'];
+            $_SESSION['userid'] = $user['UserId'];
 
             // 登录成功提示
             echo '<div class="text-center">You are now logged in! You will be redirected shortly.</div>';
