@@ -129,6 +129,56 @@
   $end_date = new DateTime('2020-11-02T00:00:00');
   
   print_listing_li($item_id, $title, $description, $current_price, $num_bids, $end_date);
+
+  
+
+  // 连接数据库
+  $servername = "localhost";
+  $new_user = "COMP0178"; 
+  $new_password = "DatabaseCW"; 
+  $dbname = "AuctionSystem"; 
+
+  $connection = mysqli_connect($servername, $new_user, $new_password, $dbname);
+
+  if (!$connection) {
+      die("Error connecting to database: " . mysqli_connect_error());
+  }
+
+  // 查询 Auctions 和 Items 数据
+  $sql = "
+  SELECT 
+      a.AuctionId,
+      i.ItemName,
+      i.Description,
+      a.StartingPrice,
+      a.EndDate,
+      (SELECT COUNT(*) FROM Bids b WHERE b.AuctionId = a.AuctionId) AS NumBids
+  FROM 
+      Auctions a
+  JOIN 
+      Items i ON a.ItemId = i.ItemId
+  ORDER BY 
+      a.EndDate ASC";
+
+  $result = mysqli_query($connection, $sql);
+
+  if ($result) {
+      while ($row = mysqli_fetch_assoc($result)) {
+          $auction_id = $row['AuctionId'];
+          $title = $row['ItemName'];
+          $description = $row['Description'];
+          $current_price = $row['StartingPrice'];
+          $num_bids = 25; //需被替换$row['NumBids']如果Bid表完成了的话
+          $end_date = new DateTime($row['EndDate']);
+          print_listing_li($item_id, $title, $description, $current_price, $num_bids, $end_date);
+    }
+} else {
+    echo "<p style='color: red;'>Error fetching auction data: " . mysqli_error($connection) . "</p>";
+}
+
+// 关闭连接
+mysqli_close($connection);
+
 ?>
 
 </ul>
