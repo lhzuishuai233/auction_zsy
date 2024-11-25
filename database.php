@@ -97,10 +97,10 @@ $sql = "
 CREATE TABLE IF NOT EXISTS Auctions (
     AuctionId INT AUTO_INCREMENT PRIMARY KEY,
     ItemName VARCHAR(255) NOT NULL,
-    Description TEXT NOT NULL,
+    Description TEXT,
     Category VARCHAR(255) NOT NULL,
     StartingPrice DECIMAL(10, 2) NOT NULL,
-    ReservePrice DECIMAL(10, 2) NOT NULL,
+    ReservePrice DECIMAL(10, 2),
     EndDate DATETIME NOT NULL,
     SellerId INT NOT NULL,
     FOREIGN KEY (SellerId) REFERENCES Users(UserId)
