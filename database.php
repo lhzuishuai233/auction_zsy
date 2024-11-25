@@ -91,18 +91,30 @@ if (mysqli_query($connection, $sql)) {
     die("Error creating table 'users': " . mysqli_error($connection));
 }
 
+// 创建表Items
+$sql = "
+CREATE TABLE IF NOT EXISTS Items (
+    ItemId INT AUTO_INCREMENT PRIMARY KEY,
+    ItemName VARCHAR(255) NOT NULL,
+    Description TEXT,
+    Category VARCHAR(255) NOT NULL
+)";
+if (mysqli_query($connection, $sql)) {
+    echo "Table 'items' created successfully.<br>";
+} else {
+    die("Error creating table 'items': " . mysqli_error($connection));
+}
 
 // 创建表Auctions
 $sql = "
 CREATE TABLE IF NOT EXISTS Auctions (
     AuctionId INT AUTO_INCREMENT PRIMARY KEY,
-    ItemName VARCHAR(255) NOT NULL,
-    Description TEXT,
-    Category VARCHAR(255) NOT NULL,
+    ItemId INT NOT NULL,
     StartingPrice DECIMAL(10, 2) NOT NULL,
     ReservePrice DECIMAL(10, 2),
     EndDate DATETIME NOT NULL,
     SellerId INT NOT NULL,
+    FOREIGN KEY (ItemId) REFERENCES Items(ItemId),
     FOREIGN KEY (SellerId) REFERENCES Users(UserId)
 )";
 if (mysqli_query($connection, $sql)) {
@@ -110,6 +122,7 @@ if (mysqli_query($connection, $sql)) {
 } else {
     die("Error creating table 'auctions': " . mysqli_error($connection));
 }
+
 
 // 创建表Bids
 $sql = "
