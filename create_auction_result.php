@@ -65,24 +65,38 @@ if (!empty($errors)) {
 
 /* TODO #3: If everything looks good, make the appropriate call to insert
             data into the database. */
-$sellerId = $_SESSION['userid']; // Assuming seller's ID is stored in session after login
-$sql = "INSERT INTO Auctions (ItemName, Description, Category, StartingPrice, ReservePrice, EndDate, SellerId)
-        VALUES (?, ?, ?, ?, ?, ?, ?)";
-            
-$stmt = mysqli_prepare($connection, $sql);
-if ($stmt) {
-    mysqli_stmt_bind_param($stmt, "sssddsi", $title, $details, $category, $startingPrice, $reservePrice, $endDate, $sellerId);
-    if (mysqli_stmt_execute($stmt)) {
-        $auctionId = mysqli_insert_id($connection); // Get the ID of the newly created auction
-        // If all is successful, let user know.
-        echo('<div class="text-center">Auction successfully created! <a href="listing.php?id=' . $auctionId . '">View your new listing.</a></div>');
+// 插入商品数据到 Items 表
+$itemSql = "INSERT INTO Items (ItemName, Description, Category) VALUES (?, ?, ?)";
+$itemStmt = mysqli_prepare($connection, $itemSql);
+if ($itemStmt) {
+    mysqli_stmt_bind_param($itemStmt, "sss", $title, $details, $category);
+    if (mysqli_stmt_execute($itemStmt)) {
+        $itemId = mysqli_insert_id($connection); // 获取新插入商品的 ItemId
+
+        // 插入拍卖数据到 Auctions 表
+        $sellerId = $_SESSION['userid']; // 获取当前登录用户 ID
+        $auctionSql = "INSERT INTO Auctions (ItemId, StartingPrice, ReservePrice, EndDate, SellerId) VALUES (?, ?, ?, ?, ?)";
+        $auctionStmt = mysqli_prepare($connection, $auctionSql);
+        if ($auctionStmt) {
+            mysqli_stmt_bind_param($auctionStmt, "iddsi", $itemId, $startingPrice, $reservePrice, $endDate, $sellerId);
+            if (mysqli_stmt_execute($auctionStmt)) {
+                $auctionId = mysqli_insert_id($connection); // 获取新拍卖的 AuctionId
+                echo '<div class="text-center">Auction successfully created! <a href="listing.php?id=' . $auctionId . '">View your new listing.</a></div>';
+            } else {
+                echo "<p style='color: red;'>Error creating auction: " . mysqli_error($connection) . "</p>";
+            }
+            mysqli_stmt_close($auctionStmt);
+        } else {
+            echo "<p style='color: red;'>Error preparing the auction SQL statement: " . mysqli_error($connection) . "</p>";
+        }
     } else {
-        echo "<p style='color: red;'>Error creating auction: " . mysqli_error($connection) . "</p>";
+        echo "<p style='color: red;'>Error inserting item: " . mysqli_error($connection) . "</p>";
     }
-    mysqli_stmt_close($stmt);
+    mysqli_stmt_close($itemStmt);
 } else {
-    echo "<p style='color: red;'>Error preparing the SQL statement: " . mysqli_error($connection) . "</p>";
+    echo "<p style='color: red;'>Error preparing the item SQL statement: " . mysqli_error($connection) . "</p>";
 }
+
             
 // Close the connection
 mysqli_close($connection); 
