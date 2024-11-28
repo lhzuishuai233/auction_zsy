@@ -147,7 +147,7 @@
   // 查询 Auctions 和 Items 数据
   $sql = "
   SELECT 
-      a.AuctionId,
+      i.ItemId,
       i.ItemName,
       i.Description,
       a.StartingPrice,
@@ -164,7 +164,7 @@
 
   if ($result) {
       while ($row = mysqli_fetch_assoc($result)) {
-          $auction_id = $row['AuctionId'];
+          $item_id = $row['ItemId'];
           $title = $row['ItemName'];
           $description = $row['Description'];
           $current_price = $row['StartingPrice'];
