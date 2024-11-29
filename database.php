@@ -84,12 +84,22 @@ CREATE TABLE IF NOT EXISTS Users (
     Email VARCHAR(255) NOT NULL UNIQUE,
     Password VARCHAR(255) NOT NULL,
     Role ENUM('buyer', 'seller') NOT NULL
-) AUTO_INCREMENT=20240001";
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+";
 if (mysqli_query($connection, $sql)) {
-    echo "Table 'users' created successfully.<br>";
+    echo "Table 'Users' created successfully.<br>";
 } else {
-    die("Error creating table 'users': " . mysqli_error($connection));
+    die("Error creating table 'Users': " . mysqli_error($connection));
 }
+
+// 设置 AUTO_INCREMENT 起始值
+$sql = "ALTER TABLE Users AUTO_INCREMENT = 20240001";
+if (mysqli_query($connection, $sql)) {
+    echo "AUTO_INCREMENT value set successfully.<br>";
+} else {
+    die("Error setting AUTO_INCREMENT value: " . mysqli_error($connection));
+}
+
 
 // 创建表Items
 $sql = "
@@ -98,11 +108,12 @@ CREATE TABLE IF NOT EXISTS Items (
     ItemName VARCHAR(255) NOT NULL,
     Description TEXT,
     Category VARCHAR(255) NOT NULL
-)";
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+";
 if (mysqli_query($connection, $sql)) {
-    echo "Table 'items' created successfully.<br>";
+    echo "Table 'Items' created successfully.<br>";
 } else {
-    die("Error creating table 'items': " . mysqli_error($connection));
+    die("Error creating table 'Items': " . mysqli_error($connection));
 }
 
 // 创建表Auctions
@@ -114,13 +125,15 @@ CREATE TABLE IF NOT EXISTS Auctions (
     ReservePrice DECIMAL(10, 2),
     EndDate DATETIME NOT NULL,
     SellerId INT NOT NULL,
+    Status ENUM('active', 'ended_sold', 'ended_unsold') NOT NULL DEFAULT 'active',
     FOREIGN KEY (ItemId) REFERENCES Items(ItemId),
     FOREIGN KEY (SellerId) REFERENCES Users(UserId)
-)";
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+";
 if (mysqli_query($connection, $sql)) {
-    echo "Table 'auctions' created successfully.<br>";
+    echo "Table 'Auctions' created successfully.<br>";
 } else {
-    die("Error creating table 'auctions': " . mysqli_error($connection));
+    die("Error creating table 'Auctions': " . mysqli_error($connection));
 }
 
 
@@ -128,18 +141,38 @@ if (mysqli_query($connection, $sql)) {
 $sql = "
 CREATE TABLE IF NOT EXISTS Bids (
     BidId INT AUTO_INCREMENT PRIMARY KEY,
-    AuctionId INT NOT NULL,
+    ItemId INT NOT NULL,
     BuyerId INT NOT NULL,
     BidAmount DECIMAL(10, 2) NOT NULL,
     BidTime DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (AuctionId) REFERENCES Auctions(AuctionId),
+    FOREIGN KEY (ItemId) REFERENCES Auctions(ItemId),
     FOREIGN KEY (BuyerId) REFERENCES Users(UserId)
-)";
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+";
 if (mysqli_query($connection, $sql)) {
-    echo "Table 'bids' created successfully.<br>";
+    echo "Table 'Bids' created successfully.<br>";
 } else {
-    die("Error creating table 'bids': " . mysqli_error($connection));
+    die("Error creating table 'Bids': " . mysqli_error($connection));
 }
+
+// 创建表Watchlist
+$sql = "
+CREATE TABLE IF NOT EXISTS Watchlist (
+    WatchlistId INT AUTO_INCREMENT PRIMARY KEY,
+    UserId INT NOT NULL,
+    ItemId INT NOT NULL,
+    CreatedTime DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (UserId) REFERENCES Users(UserId) ON DELETE CASCADE,
+    FOREIGN KEY (ItemId) REFERENCES Items(ItemId) ON DELETE CASCADE,
+    UNIQUE KEY unique_watchlist (UserId, ItemId)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+";
+if (mysqli_query($connection, $sql)) {
+    echo "Table 'Watchlist' created successfully.<br>";
+} else {
+    die("Error creating table 'Watchlist': " . mysqli_error($connection));
+}
+
 
 // 创建表Notifications（optional）
 $sql = "
@@ -152,11 +185,12 @@ CREATE TABLE IF NOT EXISTS Notifications (
     CreatedTime DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (UserId) REFERENCES Users(UserId),
     FOREIGN KEY (AuctionId) REFERENCES Auctions(AuctionId)
-)";
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+";
 if (mysqli_query($connection, $sql)) {
-    echo "Table 'notifications' created successfully.<br>";
+    echo "Table 'Notifications' created successfully.<br>";
 } else {
-    die("Error creating table 'notifications': " . mysqli_error($connection));
+    die("Error creating table 'Notifications': " . mysqli_error($connection));
 }
 
 // 关闭连接
