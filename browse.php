@@ -156,7 +156,7 @@ if (!isset($_GET['page'])) {
     $row_count = mysqli_fetch_assoc($result_count);
     $num_results = (int)$row_count['TotalResults']; // 总记录数
 
-    $results_per_page = 3; //每页多少条
+    $results_per_page = 5; //每页多少条
     $max_page = ceil($num_results / $results_per_page);
     $offset = ($curr_page - 1) * $results_per_page;
 
