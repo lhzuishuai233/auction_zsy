@@ -36,14 +36,14 @@
           </div>
         </div>
         <div class="col-md-3 pr-0">
-          <div class="form-inline">
-            <label class="mx-2" for="order_by">Sort by:</label>
-            <select class="form-control" id="order_by">
-              <option selected value="pricelow">Price (low to high)</option>
-              <option value="pricehigh">Price (high to low)</option>
-              <option value="date">Soonest expiry</option>
-            </select>
-          </div>
+        <div class="form-inline">
+  <label class="mx-2" for="order_by">Sort by:</label>
+  <select class="form-control" id="order_by" name="order_by">
+    <option value="pricelow" <?php if ($ordering == 'pricelow') echo 'selected'; ?>>Price (low to high)</option>
+    <option value="pricehigh" <?php if ($ordering == 'pricehigh') echo 'selected'; ?>>Price (high to low)</option>
+    <option value="date" <?php if ($ordering == 'date') echo 'selected'; ?>>Soonest expiry</option>
+  </select>
+</div>
         </div>
         <div class="col-md-1 px-0">
           <button type="submit" class="btn btn-primary">Search</button>
