@@ -28,10 +28,16 @@
           <div class="form-group">
             <label for="cat" class="sr-only">Search within:</label>
             <select class="form-control" id="cat">
-              <option selected value="all">All categories</option>
-              <option value="fill">Fill me in</option>
-              <option value="with">with options</option>
-              <option value="populated">populated from a database?</option>
+              <option selected value="estate">Real estate</option>
+              <option value="stock">Stock rights</option>
+              <option value="car">Luxury car</option>
+              <option value="porcelain">Antique porcelain</option>
+              <option value="celebrity">Celebrity calligraphy and painting</option>
+              <option value="furniture">Antique furniture</option>
+              <option value="clothes">Clothes and bag</option>
+              <option value="jewelry">Jewelry and watch</option>
+              <option value="toy">Toy</option>
+              <option value="other">Other categories</option
             </select>
           </div>
         </div>
@@ -84,16 +90,16 @@ if (!isset($_GET['page'])) {
   $curr_page = $_GET['page'];
 }
 
-/* TODO: Use above values to construct a query. Use this query to 
+/* TODO: Use above values to construct a query. Use this query to
    retrieve data from the database. (If there is no form data entered,
    decide on appropriate default value/default query to make. */
 
 
 /* For the purposes of pagination, it would also be helpful to know the
    total number of results that satisfy the above query */
-// $num_results = 96; // TODO: Calculate me for real
-// $results_per_page = 10;
-// $max_page = ceil($num_results / $results_per_page);
+//$num_results = 96; // TODO: Calculate me for real
+//$results_per_page = 10;
+//$max_page = ceil($num_results / $results_per_page);
 ?>
 
 <div class="container mt-5">
@@ -115,7 +121,7 @@ if (!isset($_GET['page'])) {
     $end_date = new DateTime('2020-09-16T11:00:00');
 
     // This uses a function defined in utilities.php
-    // print_listing_li($item_id, $title, $description, $current_price, $num_bids, $end_date);
+    //print_listing_li($item_id, $title, $description, $current_price, $num_bids, $end_date);
 
     $item_id = "516";
     $title = "Different title";
@@ -124,7 +130,7 @@ if (!isset($_GET['page'])) {
     $num_bids = 3;
     $end_date = new DateTime('2020-11-02T00:00:00');
 
-    // print_listing_li($item_id, $title, $description, $current_price, $num_bids, $end_date);
+    //print_listing_li($item_id, $title, $description, $current_price, $num_bids, $end_date);
 
 
 
@@ -150,7 +156,7 @@ if (!isset($_GET['page'])) {
     $row_count = mysqli_fetch_assoc($result_count);
     $num_results = (int)$row_count['TotalResults']; // 总记录数
 
-    $results_per_page = 5; // 每页多少条
+    $results_per_page = 3; //每页多少条
     $max_page = ceil($num_results / $results_per_page);
     $offset = ($curr_page - 1) * $results_per_page;
 
@@ -179,8 +185,7 @@ if (!isset($_GET['page'])) {
         $title = $row['ItemName'];
         $description = $row['Description'];
         $current_price = $row['StartingPrice'];
-        //需被替换$row['NumBids']如果Bid表完成了的话
-        $num_bids = $row['NumBids']; 
+        $num_bids = $row['NumBids']; //需被替换$row['NumBids']如果Bid表完成了的话
         $end_date = new DateTime($row['EndDate']);
         print_listing_li($item_id, $title, $description, $current_price, $num_bids, $end_date);
       }
