@@ -1,6 +1,6 @@
 <?php include_once("header.php") ?>
 <?php require("utilities.php") ?>
-
+<?php date_default_timezone_set('Europe/London'); ?>
 <div class="container">
 
   <h2 class="my-3">Browse listings</h2>
