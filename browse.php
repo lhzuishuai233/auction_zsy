@@ -20,7 +20,7 @@
                   <i class="fa fa-search"></i>
                 </span>
               </div>
-              <input type="text" class="form-control border-left-0" id="keyword" placeholder="Search for anything">
+              <input type="text" class="form-control border-left-0" id="keyword" name="keyword" placeholder="Search for anything">
             </div>
           </div>
         </div>
@@ -153,27 +153,61 @@ $max_page = ceil($num_results / $results_per_page);
       Auctions a
   JOIN 
       Items i ON a.ItemId = i.ItemId
-  ORDER BY 
-      a.EndDate ASC";
+  WHERE 1=1
+  ";
+  if (!empty($keyword)) {
+    $sql .= " AND (i.ItemName LIKE ? OR i.Description LIKE ?)";
+}
+  
+// Add ordering
+$order_by_options = [
+  'pricelow' => 'a.StartingPrice ASC',
+  'pricehigh' => 'a.StartingPrice DESC',
+  'date' => 'a.EndDate ASC'
+];
+$order_by_clause = $order_by_options[$ordering] ?? $order_by_options['pricelow'];
+$sql .= " ORDER BY $order_by_clause";
 
-    $result = mysqli_query($connection, $sql);
+// Prepare the statement
+$stmt = mysqli_prepare($connection, $sql);
 
-    if ($result) {
+if (!$stmt) {
+  die("Error preparing statement: " . mysqli_error($connection));
+}
+
+// Bind parameters if keyword is provided
+if (!empty($keyword)) {
+  $search_param = '%' . $keyword . '%';
+  mysqli_stmt_bind_param($stmt, "ss", $search_param, $search_param);
+}
+
+// Execute the statement
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
+?>
+
+<div class="container mt-5">
+<ul class="list-group">
+  <?php
+  // Display the results
+  if ($result && mysqli_num_rows($result) > 0) {
       while ($row = mysqli_fetch_assoc($result)) {
-        $item_id = $row['ItemId'];
-        $title = $row['ItemName'];
-        $description = $row['Description'];
-        $current_price = $row['StartingPrice'];
-        $num_bids = 25; //需被替换$row['NumBids']如果Bid表完成了的话
-        $end_date = new DateTime($row['EndDate']);
-        print_listing_li($item_id, $title, $description, $current_price, $num_bids, $end_date);
-      }
-    } else {
-      echo "<p style='color: red;'>Error fetching auction data: " . mysqli_error($connection) . "</p>";
-    }
+          $item_id = $row['ItemId'];
+          $title = htmlspecialchars($row['ItemName']);
+          $description = htmlspecialchars($row['Description']);
+          $current_price = $row['StartingPrice'];
+          $num_bids = $row['NumBids'];
+          $end_date = new DateTime($row['EndDate']);
 
-    // 关闭连接
-    mysqli_close($connection);
+          // Use print_listing_li to display the auction listing
+          print_listing_li($item_id, $title, $description, $current_price, $num_bids, $end_date);
+      }
+  } else {
+      echo "<li class='list-group-item'>No results found for '<strong>" . htmlspecialchars($keyword) . "</strong>'</li>";
+  }
+
+  // Close the connection
+  mysqli_close($connection);
 
     ?>
 
