@@ -91,9 +91,9 @@ if (!isset($_GET['page'])) {
 
 /* For the purposes of pagination, it would also be helpful to know the
    total number of results that satisfy the above query */
-$num_results = 96; // TODO: Calculate me for real
-$results_per_page = 10;
-$max_page = ceil($num_results / $results_per_page);
+// $num_results = 96; // TODO: Calculate me for real
+// $results_per_page = 10;
+// $max_page = ceil($num_results / $results_per_page);
 ?>
 
 <div class="container mt-5">
@@ -115,7 +115,7 @@ $max_page = ceil($num_results / $results_per_page);
     $end_date = new DateTime('2020-09-16T11:00:00');
 
     // This uses a function defined in utilities.php
-    print_listing_li($item_id, $title, $description, $current_price, $num_bids, $end_date);
+    // print_listing_li($item_id, $title, $description, $current_price, $num_bids, $end_date);
 
     $item_id = "516";
     $title = "Different title";
@@ -124,7 +124,7 @@ $max_page = ceil($num_results / $results_per_page);
     $num_bids = 3;
     $end_date = new DateTime('2020-11-02T00:00:00');
 
-    print_listing_li($item_id, $title, $description, $current_price, $num_bids, $end_date);
+    // print_listing_li($item_id, $title, $description, $current_price, $num_bids, $end_date);
 
 
 
@@ -140,6 +140,20 @@ $max_page = ceil($num_results / $results_per_page);
       die("Error connecting to database: " . mysqli_connect_error());
     }
 
+    // 查询总记录数
+    $sql_count = "
+                  SELECT COUNT(*) AS TotalResults
+                  FROM Auctions a
+                  JOIN Items i ON a.ItemId = i.ItemId;
+                ";
+    $result_count = mysqli_query($connection, $sql_count);
+    $row_count = mysqli_fetch_assoc($result_count);
+    $num_results = (int)$row_count['TotalResults']; // 总记录数
+
+    $results_per_page = 5; // 每页多少条
+    $max_page = ceil($num_results / $results_per_page);
+    $offset = ($curr_page - 1) * $results_per_page;
+
     // 查询 Auctions 和 Items 数据
     $sql = "
   SELECT 
@@ -154,8 +168,9 @@ $max_page = ceil($num_results / $results_per_page);
   JOIN 
       Items i ON a.ItemId = i.ItemId
   ORDER BY 
-      a.EndDate ASC";
-
+      a.EndDate ASC
+  LIMIT {$results_per_page} OFFSET {$offset}
+      ";
     $result = mysqli_query($connection, $sql);
 
     if ($result) {
@@ -164,7 +179,8 @@ $max_page = ceil($num_results / $results_per_page);
         $title = $row['ItemName'];
         $description = $row['Description'];
         $current_price = $row['StartingPrice'];
-        $num_bids = 25; //需被替换$row['NumBids']如果Bid表完成了的话
+        //需被替换$row['NumBids']如果Bid表完成了的话
+        $num_bids = $row['NumBids']; 
         $end_date = new DateTime($row['EndDate']);
         print_listing_li($item_id, $title, $description, $current_price, $num_bids, $end_date);
       }
