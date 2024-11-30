@@ -4,7 +4,12 @@
 <?php
 
 // Get info from the URL:
-$item_id = $_GET['item_id'];
+$item_id = $_GET['id'] ?? null;
+
+if (!$item_id || !is_numeric($item_id)) {
+    die("<p style='color: red;'>Invalid item ID.</p>");
+}
+
 
 $_SESSION['item_id'] = $item_id;
 
@@ -47,9 +52,8 @@ $sql = "
   GROUP BY 
       a.AuctionId";
 
-
-
 $stmt = mysqli_prepare($connection, $sql);
+
 if (!$stmt) {
   die("Error preparing statement: " . mysqli_error($connection));
 }
