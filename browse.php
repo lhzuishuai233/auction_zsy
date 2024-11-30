@@ -28,10 +28,17 @@
           <div class="form-group">
             <label for="cat" class="sr-only">Search within:</label>
             <select class="form-control" id="cat">
-              <option selected value="all">All categories</option>
-              <option value="fill">Fill me in</option>
-              <option value="with">with options</option>
-              <option value="populated">populated from a database?</option>
+              <option selected value="estate">Real estate</option>
+              <option value="stock">Stock rights</option>
+              <option value="car">Luxury car</option>
+              <option value="porcelain">Antique porcelain</option>
+              <option value="celebrity">Celebrity calligraphy and painting</option>
+              <option value="furniture">Antique furniture</option>
+              <option value="clothes">Clothes and bag</option>
+              <option value="jewelry">Jewelry and watch</option>
+              <option value="toy">Toy</option>
+              <option value="other">Other categories</option>
+              
             </select>
           </div>
         </div>
