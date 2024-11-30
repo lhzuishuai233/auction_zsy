@@ -22,7 +22,9 @@
   <div class="form-group row">
     <label for="email" class="col-sm-2 col-form-label text-right">Email</label>
 	<div class="col-sm-10">
-      <input type="text" class="form-control" name="email" id="email" placeholder="Email">
+      <!-- Modify type = "email" Browser automatically recognizes if it's an email -->
+      <!-- 修改 type="email" 浏览器自动识别是否是邮箱并检查 -->
+      <input type="email" class="form-control" name="email" id="email" placeholder="Email">
       <small id="emailHelp" class="form-text text-muted"><span class="text-danger">* Required.</span></small>
 	</div>
   </div>

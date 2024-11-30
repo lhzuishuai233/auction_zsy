@@ -50,7 +50,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             // 登录成功提示
             echo '<div class="text-center">You are now logged in! You will be redirected shortly.</div>';
-            // Redirect to index after 5 seconds
+            // echo "<div id='loginMessage' class='alert alert-success text-center' style='position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 1000;'>
+            //          You are now logged in! You will be redirected shortly.
+            //     </div>
+            //     <script>
+            //         // 设置提示框在3秒后自动隐藏
+            //         setTimeout(function() {
+            //             document.getElementById('loginMessage').style.display = 'none';
+            //         }, 3000);
+            //     </script>";
+            // Redirect to index after 1 seconds
             header("refresh:1;url=index.php");
         } else {
             echo '<p style="color: red;">Invalid password. Please try again.</p>';

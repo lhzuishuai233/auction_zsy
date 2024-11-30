@@ -48,10 +48,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     // 如果有错误，显示错误信息并终止
     if (!empty($errors)) {
-        foreach ($errors as $error) {
-            echo "<p style='color: red;'>$error</p>";
-        }
-        exit;
+        // foreach ($errors as $error) {
+            // echo "<p style='color: red;'>$error</p>";
+
+            // 修改
+            // 把所有错误信息显示在一起
+            $error_message = implode("\\n", $errors);
+            echo "<script>alert('$error_message');</script>";
+        // }
+        echo "<script>window.location.href = 'register.php';</script>";
+        // exit;
+        // 不用exit防止页面停止
     }
 
     // 对密码进行哈希加密
@@ -62,13 +69,29 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $stmt = mysqli_prepare($connection, $sql);
     mysqli_stmt_bind_param($stmt, "sss", $email, $hashed_password, $accountType);
 
-    if (mysqli_stmt_execute($stmt)) {
-        echo "<p style='color: green;'>Account successfully created! You can now <a href='browse.php'>log in</a>.</p>";
-    } else {
-        if (mysqli_errno($connection) === 1062) { // 检测重复邮箱错误
-            echo "<p style='color: red;'>This email is already registered. Please use a different email.</p>";
+    // if (mysqli_stmt_execute($stmt)) {
+    //     echo "<p style='color: green;'>Account successfully created! You can now <a href='browse.php'>log in</a>.</p>";
+    // } else {
+    //     if (mysqli_errno($connection) === 1062) { // 检测重复邮箱错误
+    //         echo "<p style='color: red;'>This email is already registered. Please use a different email.</p>";
+    //     } else {
+    //         echo "<p style='color: red;'>Error creating account: " . mysqli_error($connection) . "</p>";
+    //     }
+    // }
+
+    // 修改 
+    // 增加异常捕获，解决无法检测重复邮箱的问题
+    try {
+        if (mysqli_stmt_execute($stmt)) {
+            echo "<script>alert('Account successfully created! Click OK to login.'); window.location.href = 'browse.php';</script>";
         } else {
-            echo "<p style='color: red;'>Error creating account: " . mysqli_error($connection) . "</p>";
+            throw new Exception(mysqli_error($connection), mysqli_errno($connection));
+        }
+    } catch (Exception $e) {
+        if ($e->getCode() === 1062) {
+            echo "<script>alert('This email is already registered. Please use a different email.'); window.location.href = 'register.php';</script>";
+        } else {
+            echo "<p style='color: red;'>Error creating account: " . $e->getMessage() . "</p >";
         }
     }
 
