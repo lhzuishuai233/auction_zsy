@@ -20,7 +20,7 @@
                   <i class="fa fa-search"></i>
                 </span>
               </div>
-              <input type="text" class="form-control border-left-0" id="keyword" name="keyword" placeholder="Search for anything">
+              <input type="text" class="form-control border-left-0" id="keyword" placeholder="Search for anything">
             </div>
           </div>
         </div>
@@ -38,19 +38,18 @@
               <option value="jewelry">Jewelry and watch</option>
               <option value="toy">Toy</option>
               <option value="other">Other categories</option>
-              
             </select>
           </div>
         </div>
         <div class="col-md-3 pr-0">
-        <div class="form-inline">
-  <label class="mx-2" for="order_by">Sort by:</label>
-  <select class="form-control" id="order_by" name="order_by">
-    <option value="pricelow" <?php if ($ordering == 'pricelow') echo 'selected'; ?>>Price (low to high)</option>
-    <option value="pricehigh" <?php if ($ordering == 'pricehigh') echo 'selected'; ?>>Price (high to low)</option>
-    <option value="date" <?php if ($ordering == 'date') echo 'selected'; ?>>Soonest expiry</option>
-  </select>
-</div>
+          <div class="form-inline">
+            <label class="mx-2" for="order_by">Sort by:</label>
+            <select class="form-control" id="order_by">
+              <option selected value="pricelow">Price (low to high)</option>
+              <option value="pricehigh">Price (high to low)</option>
+              <option value="date">Soonest expiry</option>
+            </select>
+          </div>
         </div>
         <div class="col-md-1 px-0">
           <button type="submit" class="btn btn-primary">Search</button>
@@ -91,16 +90,16 @@ if (!isset($_GET['page'])) {
   $curr_page = $_GET['page'];
 }
 
-/* TODO: Use above values to construct a query. Use this query to 
+/* TODO: Use above values to construct a query. Use this query to
    retrieve data from the database. (If there is no form data entered,
    decide on appropriate default value/default query to make. */
 
 
 /* For the purposes of pagination, it would also be helpful to know the
    total number of results that satisfy the above query */
-// $num_results = 96; // TODO: Calculate me for real
-// $results_per_page = 10;
-// $max_page = ceil($num_results / $results_per_page);
+//$num_results = 96; // TODO: Calculate me for real
+//$results_per_page = 10;
+//$max_page = ceil($num_results / $results_per_page);
 ?>
 
 <div class="container mt-5">
@@ -113,7 +112,6 @@ if (!isset($_GET['page'])) {
      retrieved from the query -->
 
     <?php
-<<<<<<< HEAD
     // Demonstration of what listings will look like using dummy data.
     $item_id = "87021";
     $title = "Dummy title";
@@ -123,7 +121,7 @@ if (!isset($_GET['page'])) {
     $end_date = new DateTime('2020-09-16T11:00:00');
 
     // This uses a function defined in utilities.php
-    // print_listing_li($item_id, $title, $description, $current_price, $num_bids, $end_date);
+    //print_listing_li($item_id, $title, $description, $current_price, $num_bids, $end_date);
 
     $item_id = "516";
     $title = "Different title";
@@ -132,13 +130,10 @@ if (!isset($_GET['page'])) {
     $num_bids = 3;
     $end_date = new DateTime('2020-11-02T00:00:00');
 
-    // print_listing_li($item_id, $title, $description, $current_price, $num_bids, $end_date);
+    //print_listing_li($item_id, $title, $description, $current_price, $num_bids, $end_date);
 
 
 
-=======
-    
->>>>>>> b0d08fe27baf1f0b40b023d324e5c8d62f0147a2
     // 连接数据库
     $servername = "localhost";
     $new_user = "COMP0178";
@@ -161,7 +156,7 @@ if (!isset($_GET['page'])) {
     $row_count = mysqli_fetch_assoc($result_count);
     $num_results = (int)$row_count['TotalResults']; // 总记录数
 
-    $results_per_page = 5; // 每页多少条
+    $results_per_page = 3; //每页多少条
     $max_page = ceil($num_results / $results_per_page);
     $offset = ($curr_page - 1) * $results_per_page;
 
@@ -178,84 +173,28 @@ if (!isset($_GET['page'])) {
       Auctions a
   JOIN 
       Items i ON a.ItemId = i.ItemId
-<<<<<<< HEAD
   ORDER BY 
       a.EndDate ASC
   LIMIT {$results_per_page} OFFSET {$offset}
       ";
     $result = mysqli_query($connection, $sql);
-=======
-  WHERE 1=1
-  ";
-  if (!empty($keyword)) {
-    $sql .= " AND (i.ItemName LIKE ? OR i.Description LIKE ?)";
-}
-  
-// Add ordering
-$order_by_options = [
-  'pricelow' => 'a.StartingPrice ASC',
-  'pricehigh' => 'a.StartingPrice DESC',
-  'date' => 'a.EndDate ASC'
-];
-$order_by_clause = $order_by_options[$ordering] ?? $order_by_options['pricelow'];
-$sql .= " ORDER BY $order_by_clause";
 
-// Prepare the statement
-$stmt = mysqli_prepare($connection, $sql);
->>>>>>> b0d08fe27baf1f0b40b023d324e5c8d62f0147a2
-
-if (!$stmt) {
-  die("Error preparing statement: " . mysqli_error($connection));
-}
-
-// Bind parameters if keyword is provided
-if (!empty($keyword)) {
-  $search_param = '%' . $keyword . '%';
-  mysqli_stmt_bind_param($stmt, "ss", $search_param, $search_param);
-}
-
-// Execute the statement
-mysqli_stmt_execute($stmt);
-$result = mysqli_stmt_get_result($stmt);
-?>
-
-<div class="container mt-5">
-<ul class="list-group">
-  <?php
-  // Display the results
-  if ($result && mysqli_num_rows($result) > 0) {
+    if ($result) {
       while ($row = mysqli_fetch_assoc($result)) {
-<<<<<<< HEAD
         $item_id = $row['ItemId'];
         $title = $row['ItemName'];
         $description = $row['Description'];
         $current_price = $row['StartingPrice'];
-        //需被替换$row['NumBids']如果Bid表完成了的话
-        $num_bids = $row['NumBids']; 
+        $num_bids = $row['NumBids']; //需被替换$row['NumBids']如果Bid表完成了的话
         $end_date = new DateTime($row['EndDate']);
         print_listing_li($item_id, $title, $description, $current_price, $num_bids, $end_date);
       }
     } else {
       echo "<p style='color: red;'>Error fetching auction data: " . mysqli_error($connection) . "</p>";
     }
-=======
-          $item_id = $row['ItemId'];
-          $title = htmlspecialchars($row['ItemName']);
-          $description = htmlspecialchars($row['Description']);
-          $current_price = $row['StartingPrice'];
-          $num_bids = $row['NumBids'];
-          $end_date = new DateTime($row['EndDate']);
->>>>>>> b0d08fe27baf1f0b40b023d324e5c8d62f0147a2
 
-          // Use print_listing_li to display the auction listing
-          print_listing_li($item_id, $title, $description, $current_price, $num_bids, $end_date);
-      }
-  } else {
-      echo "<li class='list-group-item'>No results found for '<strong>" . htmlspecialchars($keyword) . "</strong>'</li>";
-  }
-
-  // Close the connection
-  mysqli_close($connection);
+    // 关闭连接
+    mysqli_close($connection);
 
     ?>
 
