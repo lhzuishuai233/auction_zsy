@@ -4,6 +4,9 @@
   // ONLY after the user's login credentials have been verified via a 
   // database query.
   session_start();
+  $user_timezone = $_SESSION['user_timezone'] ?? 'UTC'; // 从 session 中获取用户时区
+  date_default_timezone_set($user_timezone); // 设置时区
+
   if (!isset($_SESSION['logged_in'])) {
     $_SESSION['logged_in'] = false;
     unset($_SESSION['account_type']); 

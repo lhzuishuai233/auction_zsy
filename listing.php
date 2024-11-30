@@ -2,7 +2,7 @@
 <?php require("utilities.php") ?>
 
 <?php
-date_default_timezone_set('Europe/London');
+
 // Get info from the URL:
 $item_id = $_GET['item_id'];
 

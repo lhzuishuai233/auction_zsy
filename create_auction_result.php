@@ -3,7 +3,11 @@
 <div class="container my-5">
 
     <?php
-    date_default_timezone_set('Europe/London'); // 根据实际时区调整
+   
+    session_start();  // 确保 session 开始
+    $user_timezone = $_SESSION['user_timezone'] ?? 'UTC'; // 从 session 中获取用户时区
+    date_default_timezone_set($user_timezone); // 设置时区
+
     
 
     // This function takes the form data and adds the new auction to the database.
